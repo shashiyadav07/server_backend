@@ -109,7 +109,7 @@ app.post("/admin", async (req, res) => {
 
 
 function verifyToken(req, res, next){
- console.log("cookies test",req.cookies)
+ console.log("cookies test",req.cookies['token'])
     const token = req.cookies['token'];
 
     if (!token) {
