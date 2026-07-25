@@ -3,6 +3,9 @@ import cors from "cors";
 import { connectDB } from "./dbconfig.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
