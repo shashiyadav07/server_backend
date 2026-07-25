@@ -108,9 +108,10 @@ app.post("/admin", async (req, res) => {
 });
 
 
-function verifyToken(req, res, next){
- console.log("cookies test",req.cookies['token'])
-    const token = req.cookies['token'];
+function verifyToken(req, res, next) {
+    console.log("Token:", req.cookies.token);
+
+    const token = req.cookies.token;
 
     if (!token) {
         return res.status(401).json({
@@ -120,25 +121,19 @@ function verifyToken(req, res, next){
     }
 
     try {
+        const decoded = jwt.verify(token, "mySecretKey");
 
-        const decoded = jwt.verify(token, "mySecretKey",(error,decoded)=>{
-            console.log("decodede",decoded)
-        });
-
-    
+        console.log(decoded);
 
         next();
 
     } catch (err) {
-
         return res.status(401).json({
             success: false,
             message: "Invalid Token"
         });
-
     }
-
-};
+}
 
 app.get("/adminHome", verifyToken, async (req, res) => {
     try {
