@@ -55,8 +55,10 @@ app.post("/lead", async (req, res) => {
 });
 app.post("/admin", async (req, res) => {
     try {
-const boss = "Boss";
-const Password = "boss123";
+
+        const boss = "Boss";
+        const Password = "boss123";
+
         const { Boss, password } = req.body;
 
         if (Boss === boss && password === Password) {
@@ -71,10 +73,18 @@ const Password = "boss123";
                     expiresIn: "1h"
                 }
             );
+
+            // ✅ Cookie backend set karega
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "None",
+                maxAge: 60 * 60 * 1000
+            });
+
             return res.status(200).json({
                 success: true,
-                message: "Login Successful",
-                token
+                message: "Login Successful"
             });
         }
 
@@ -94,7 +104,6 @@ const Password = "boss123";
 
     }
 });
-
 
 
 function verifyToken(req, res, next){
@@ -130,15 +139,23 @@ function verifyToken(req, res, next){
 };
 
 app.get("/adminHome", verifyToken, async (req, res) => {
-    console.log("cookies test",req.cookies)
+    try {
 
-    const leads = await db
-        .collection("leadData")
-        .find()
-        .toArray();
+        const db = await connectDB();
 
-    res.json(leads);
+        const leads = await db
+            .collection("leadData")
+            .find()
+            .toArray();
 
+        res.json(leads);
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
 });
 
 
