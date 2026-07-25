@@ -142,6 +142,4 @@ app.get("/adminHome", verifyToken, async (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-    console.log("Server Running on http://localhost:4000");
-});
+export default app;
