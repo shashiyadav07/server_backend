@@ -25,33 +25,47 @@ const PORT = process.env.PORT || 4000;
 })();
 
 app.post("/lead", async (req, res) => {
+    try {
+        const { name, email, phone, service, budget, description } = req.body;
 
-    const { name, email, phone, service, budget, description } = req.body;
+        if (!name || !email || !phone || !service || !budget || !description) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
+        }
 
-    if (!name || !email || !phone || !service || !budget || !description) {
-        return res.status(400).json({
-            message: "All fields are required"
+        const lead = {
+            id: Date.now(),
+            name,
+            email,
+            phone,
+            service,
+            budget,
+            description
+        };
+
+        console.log("DB:", db);
+
+        const result = await db.collection("leadData").insertOne(lead);
+
+        console.log("Insert Result:", result);
+
+        return res.status(201).json({
+            success: true,
+            message: "Lead Added Successfully",
+            lead
+        });
+
+    } catch (err) {
+        console.error("Lead Route Error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: err.message,
+            stack: err.stack // Debug ke liye, production me hata dena
         });
     }
-
-    const lead = {
-        id: Date.now(),
-        name,
-        email,
-        phone,
-        service,
-        budget,
-        description
-    };
-
-    await db.collection("leadData").insertOne(lead);
-
-    res.status(201).json({
-        success: true,
-        message: "Lead Added Successfully",
-        lead
-    });
-
 });
 app.post("/admin", async (req, res) => {
     try {
