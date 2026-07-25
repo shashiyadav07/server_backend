@@ -74,17 +74,19 @@ app.post("/admin", async (req, res) => {
                 }
             );
 
-            // ✅ Cookie backend set karega
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "None",
-                maxAge: 60 * 60 * 1000
-            });
+            // / ✅ Cookie backend set karega
+            // res.cookie("token", token, {
+            //     httpOnly: true,
+            //     secure: true,
+            //     sameSite: "None",
+            //     maxAge: 60 * 60 * 1000
+            // }/
+            // );
 
             return res.status(200).json({
                 success: true,
-                message: "Login Successful"
+                message: "Login Successful",
+                token
             });
         }
 
