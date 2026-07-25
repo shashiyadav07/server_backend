@@ -17,23 +17,16 @@ app.use(cors({
 app.use(express.json());
 
 app.use(cookieParser())
-let db;
+
 const PORT = process.env.PORT || 4000;
 
-(async () => {
-    db = await connectDB();
-})();
+
 
 app.post("/lead", async (req, res) => {
     try {
-        const { name, email, phone, service, budget, description } = req.body;
+        const db = await connectDB();
 
-        if (!name || !email || !phone || !service || !budget || !description) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required"
-            });
-        }
+        const { name, email, phone, service, budget, description } = req.body;
 
         const lead = {
             id: Date.now(),
@@ -45,25 +38,18 @@ app.post("/lead", async (req, res) => {
             description
         };
 
-        console.log("DB:", db);
+        await db.collection("leadData").insertOne(lead);
 
-        const result = await db.collection("leadData").insertOne(lead);
-
-        console.log("Insert Result:", result);
-
-        return res.status(201).json({
+        res.status(201).json({
             success: true,
-            message: "Lead Added Successfully",
-            lead
+            message: "Lead Added Successfully"
         });
 
     } catch (err) {
-        console.error("Lead Route Error:", err);
+        console.error(err);
 
-        return res.status(500).json({
-            success: false,
-            message: err.message,
-            stack: err.stack // Debug ke liye, production me hata dena
+        res.status(500).json({
+            message: err.message
         });
     }
 });

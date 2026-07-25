@@ -12,20 +12,19 @@ let db;
 
 const connectDB = async () => {
     try {
+        console.log("Mongo URL:", process.env.MONGODB_URL);
 
         await client.connect();
 
-        console.log("✅ MongoDB Connected Successfully");
+        console.log("✅ MongoDB Connected");
 
         db = client.db("lead");
 
         return db;
 
     } catch (err) {
-
-        console.log("❌ MongoDB Connection Failed");
-        console.log(err);
-
+        console.error("MongoDB Error:", err);
+        throw err;
     }
 };
 
